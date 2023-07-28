@@ -8,10 +8,10 @@ class AlbumsHandler {
     autoBind(this);
   }
 
-  postAlbumHandler(request, h) {
+  async postAlbumHandler(request, h) {
     const {name, year} = request.payload;
 
-    const id = this._service.addAlbum({name, year});
+    const id = await this._service.addAlbum({name, year});
     const response = h.response({
       status: 'success',
       message: 'Album berhasil ditambahkan',
@@ -23,10 +23,10 @@ class AlbumsHandler {
     return response;
   }
 
-  getAlbumByIdHandler(request) {
+  async getAlbumByIdHandler(request) {
     const {id} = request.params;
 
-    const album = this._service.getAlbumById(id);
+    const album = await this._service.getAlbumById(id);
 
     return {
       status: 'success',
@@ -36,10 +36,10 @@ class AlbumsHandler {
     };
   }
 
-  putAlbumByIdHandler(request) {
+  async putAlbumByIdHandler(request) {
     const {id} = request.params;
 
-    this._service.editAlbumById(id, request.payload);
+    await this._service.editAlbumById(id, request.payload);
 
     return {
       status: 'success',
@@ -47,10 +47,10 @@ class AlbumsHandler {
     };
   }
 
-  deleteAlbumByIdHandler(request) {
+  async deleteAlbumByIdHandler(request) {
     const {id} = request.params;
 
-    this._service.deleteAlbumById(id, request.payload);
+    await this._service.deleteAlbumById(id, request.payload);
 
     return {
       status: 'success',
