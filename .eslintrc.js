@@ -23,5 +23,6 @@ module.exports = {
     'ecmaVersion': 'latest',
   },
   'rules': {
+    'require-jsdoc': 'off',
   },
 };
