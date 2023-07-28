@@ -18,9 +18,8 @@ class AlbumsHandler {
       data: {
         id,
       },
-    });
+    }).code(201);
 
-    response.code(201);
     return response;
   }
 
