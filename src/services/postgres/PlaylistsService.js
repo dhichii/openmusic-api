@@ -6,9 +6,10 @@ const AuthorizationError = require('../../exceptions/AuthorizationError');
 
 
 class PlaylistsService {
-  constructor(collaborationsService) {
+  constructor(collaborationsService, cacheService) {
     this._pool = new Pool();
     this._collaborationsService = collaborationsService;
+    this._cacheService = cacheService;
   }
 
   async addPlaylist(owner, {name}) {
@@ -23,25 +24,36 @@ class PlaylistsService {
       throw new InvariantError('Playlist gagal ditambahkan');
     }
 
+    await this._cacheService.delete(`playlist:${owner}`);
+
     return result.rows[0].id;
   }
 
   async getPlaylists(userId) {
-    const query = {
-      text: `
-        SELECT playlists.id, playlists.name, users.username
-        FROM playlists
-        LEFT JOIN users ON users.id = playlists.owner
-        LEFT JOIN collaborations ON collaborations.playlist_id = playlists.id
-        WHERE playlists.owner = $1 OR collaborations.user_id = $1
-        GROUP BY playlists.id, users.username
-      `,
-      values: [userId],
-    };
+    try {
+      const result = await this._cacheService.get(`playlist:${userId}`);
 
-    const result = await this._pool.query(query);
+      return JSON.parse(result);
+    } catch (e) {
+      const query = {
+        text: `
+          SELECT playlists.id, playlists.name, users.username
+          FROM playlists
+          LEFT JOIN users ON users.id = playlists.owner
+          LEFT JOIN collaborations ON collaborations.playlist_id = playlists.id
+          WHERE playlists.owner = $1 OR collaborations.user_id = $1
+          GROUP BY playlists.id, users.username
+        `,
+        values: [userId],
+      };
 
-    return result.rows;
+      const result = await this._pool.query(query);
+
+      await this._cacheService
+          .set(`playlist:${userId}`, JSON.stringify(result.rows));
+
+      return result.rows;
+    }
   }
 
   async getPlaylistById(id) {
@@ -65,7 +77,7 @@ class PlaylistsService {
 
   async deletePlaylist(id) {
     const query = {
-      text: 'DELETE FROM playlists WHERE id=$1 RETURNING id',
+      text: 'DELETE FROM playlists WHERE id=$1 RETURNING owner',
       values: [id],
     };
 
@@ -73,6 +85,8 @@ class PlaylistsService {
     if (!result.rowCount) {
       throw new NotFoundError('Playlist gagal dihapus. Id tidak ditemukan');
     }
+
+    await this._cacheService.delete(`playlist:${result.rows[0].owner}`);
   }
 
   async verifyPlaylistOwner(id, userId) {
