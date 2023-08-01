@@ -36,7 +36,13 @@ const CollaborationsValidator = require('./validator/collaborations');
 const PlaylistSongActivitiesService =
     require('./services/postgres/PlaylistSongActivitiesService');
 
+const UserAlbumLikesService =
+    require('./services/postgres/UserAlbumLikesService');
+
+const CacheService = require('./services/redis/CacheService');
+
 const init = async () => {
+  const cacheService = new CacheService();
   const albumsService = new AlbumsService();
   const songsService = new SongsService();
   const usersService = new UsersService();
@@ -44,9 +50,9 @@ const init = async () => {
   const collaborationsService = new CollaborationsService();
   const playlistSongActivitiesService = new PlaylistSongActivitiesService();
   const playlistsService = new PlaylistsService(collaborationsService);
-  const playlistSongsService = new PlaylistSongsService(
-      playlistSongActivitiesService,
-  );
+  const playlistSongsService =
+      new PlaylistSongsService(playlistSongActivitiesService);
+  const userAlbumLikesService = new UserAlbumLikesService(cacheService);
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -86,6 +92,7 @@ const init = async () => {
       options: {
         albumsService,
         songsService,
+        userAlbumLikesService,
         validator: AlbumsValidator,
       },
     },
