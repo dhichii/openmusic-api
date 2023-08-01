@@ -44,6 +44,7 @@ class SongsHandler {
       },
     };
   }
+
   async putSongByIdHandler(request) {
     this._validator.validateSongPayload(request.payload);
     const {id} = request.params;
@@ -55,6 +56,7 @@ class SongsHandler {
       message: 'Song berhasil diperbarui',
     };
   }
+
   async deleteSongByIdHandler(request) {
     const {id} = request.params;
 

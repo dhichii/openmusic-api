@@ -4,7 +4,6 @@ const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
 const AuthorizationError = require('../../exceptions/AuthorizationError');
 
-
 class PlaylistsService {
   constructor(collaborationsService, cacheService) {
     this._pool = new Pool();
