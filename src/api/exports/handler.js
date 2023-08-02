@@ -24,7 +24,7 @@ class ExportsHandler {
       playlistId,
     };
 
-    await this._service
+    await this._producerService
         .sendMessage('export:playlist', JSON.stringify(message));
 
     return h.response({
