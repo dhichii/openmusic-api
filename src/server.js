@@ -42,6 +42,10 @@ const UserAlbumLikesService =
 
 const CacheService = require('./services/redis/CacheService');
 
+const _exports = require('./api/exports');
+const ProducerService = require('./services/rabbitmq/ProducerService');
+const ExportsValidator = require('./validator/exports');
+
 const init = async () => {
   const cacheService = new CacheService();
   const albumsService = new AlbumsService();
@@ -138,6 +142,14 @@ const init = async () => {
         playlistsService,
         usersService,
         validator: CollaborationsValidator,
+      },
+    },
+    {
+      plugin: _exports,
+      options: {
+        producerService: ProducerService,
+        playlistsService,
+        validator: ExportsValidator,
       },
     },
   ]);
