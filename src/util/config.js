@@ -6,6 +6,9 @@ const config = {
   redis: {
     host: process.env.REDIS_SERVER,
   },
+  rabbitMq: {
+    server: process.env.RABBITMQ_SERVER,
+  },
 };
 
 module.exports = config;
