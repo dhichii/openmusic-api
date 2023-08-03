@@ -2,6 +2,7 @@ const {Pool} = require('pg');
 const generateId = require('../../util/id');
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
+const {mapAlbumDBToModel} = require('../../util/index');
 
 class AlbumsService {
   constructor() {
@@ -35,10 +36,7 @@ class AlbumsService {
       throw new NotFoundError('Album tidak ditemukan');
     }
 
-    const album = result.rows[0];
-    album.year = parseInt(result.rows[0].year);
-
-    return album;
+    return mapAlbumDBToModel(result.rows[0]);
   }
 
   async editAlbumById(id, {name, year}) {
