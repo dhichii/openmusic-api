@@ -17,7 +17,8 @@ class StorageService {
 
     return new Promise((resolve, reject) => {
       fileStream.on('error', (error) => error(reject));
-      file.pipe(fileStream).on('end', () => resolve(filename));
+      file.pipe(fileStream);
+      file.on('end', () => resolve(filename));
     });
   }
 
