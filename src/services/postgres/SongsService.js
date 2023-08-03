@@ -2,7 +2,7 @@ const {Pool} = require('pg');
 const generateId = require('../../util/id');
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
-const mapSongDBToModel = require('../../util');
+const {mapSongDBToModel} = require('../../util/index');
 
 class SongsService {
   constructor() {

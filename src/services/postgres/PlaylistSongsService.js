@@ -3,7 +3,6 @@ const generateId = require('../../util/id');
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
 
-
 class PlaylistsService {
   constructor(playlistSongActivitiesService) {
     this._pool = new Pool();
