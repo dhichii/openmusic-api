@@ -9,6 +9,9 @@ const config = {
   rabbitMq: {
     server: process.env.RABBITMQ_SERVER,
   },
+  s3: {
+    bucketName: process.env.AWS_BUCKET_NAME,
+  },
 };
 
 module.exports = config;

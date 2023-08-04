@@ -6,7 +6,6 @@ const Inert = require('@hapi/inert');
 const ClientError = require('./exceptions/ClientError');
 const TokenManager = require('./tokenize/TokenManager');
 const config = require('./util/config');
-const path = require('path');
 
 const albums = require('./api/albums');
 const AlbumsService = require('./services/postgres/AlbumsService');
@@ -49,7 +48,7 @@ const ProducerService = require('./services/rabbitmq/ProducerService');
 const ExportsValidator = require('./validator/exports');
 
 const uploads = require('./api/uploads');
-const StorageService = require('./services/storage/StorageService');
+const StorageService = require('./services/s3/StorageService');
 const UploadsValidator = require('./validator/uploads');
 
 const init = async () => {
@@ -65,8 +64,7 @@ const init = async () => {
   const playlistSongsService =
       new PlaylistSongsService(playlistSongActivitiesService);
   const userAlbumLikesService = new UserAlbumLikesService(cacheService);
-  const storageService =
-      new StorageService(path.resolve(__dirname, 'api/uploads/file/images'));
+  const storageService = new StorageService();
 
   const server = Hapi.server({
     port: config.app.port,
