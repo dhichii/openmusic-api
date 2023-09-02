@@ -30,11 +30,12 @@ class StorageService {
       Key: fileName,
     };
 
-    return new Promise((reject) => {
+    return new Promise((resolve, reject) => {
       this._S3.deleteObject(params, (error) => {
         if (error) {
           return reject(error);
         }
+        return resolve();
       });
     });
   }
