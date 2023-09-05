@@ -18,7 +18,11 @@ class UploadAlbumsHandler {
     const fileUrl = await this._storageService.writeFile(cover, cover.hapi);
     if (album.coverUrl) {
       const coverFilename = album.coverUrl.split('/').at(-1);
-      await this._storageService.deleteFile(coverFilename);
+      try {
+        await this._storageService.deleteFile(coverFilename);
+      } catch (e) {
+        await this._storageService.deleteFile(fileUrl.split('/').at(-1));
+      }
     }
 
     await this._albumsService.editCoverAlbumById(id, fileUrl);

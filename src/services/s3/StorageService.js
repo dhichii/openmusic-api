@@ -9,7 +9,7 @@ class StorageService {
   writeFile(file, meta) {
     const params = {
       Bucket: config.s3.bucketName,
-      Key: +new Date() + meta.filename,
+      Key: +new Date() + meta.filename.replaceAll(' ', '-'),
       Body: file._data,
       ContentType: meta.headers['content-type'],
     };
@@ -30,11 +30,12 @@ class StorageService {
       Key: fileName,
     };
 
-    return new Promise((reject) => {
+    return new Promise((resolve, reject) => {
       this._S3.deleteObject(params, (error) => {
         if (error) {
           return reject(error);
         }
+        return resolve();
       });
     });
   }
